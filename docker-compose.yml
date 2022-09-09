@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+    database:
+        image: postgres:latest
+        container_name: book-ratings-db
+        ports:
+          - "8888:5432"
+        volumes:
+          - book-ratings-volume:/var/lib/postgresql/data
+        networks:
+          - ratingsnetwork
+        environment:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: book-ratings-db
+          NAMESPACE: local
+
+    webapp:
+        image: gaut1993/bookrating:v1
+        container_name: book-ratings-webapp
+        ports:
+          - "8080:8080"
+        networks:
+          - ratingsnetwork
+        environment:
+          DATABASE_HOST: book-ratings-db
+          DATABASE_PORT: 5432
+        depends_on:
+          - database
+
+volumes:
+  book-ratings-volume:
+
+networks:
+    ratingsnetwork:
+
+
